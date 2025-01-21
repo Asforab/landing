@@ -1,17 +1,18 @@
 import { createContext, useContext, useReducer } from 'react';
+import { DeviceType, EditorElement } from '@/types/editor';
 
 type EditorState = {
   editor: {
-    elements: any[];
-    selectedElement: any;
-    device: 'Desktop' | 'Tablet' | 'Mobile';
+    elements: EditorElement[];
+    selectedElement: EditorElement | null;
+    device: DeviceType;
     previewMode: boolean;
     liveMode: boolean;
   };
 };
 
 type EditorAction = {
-  type: string;
+  type: 'ADD_ELEMENT' | 'DELETE_ELEMENT' | 'CHANGE_CLICKED_ELEMENT' | 'CHANGE_DEVICE' | 'TOGGLE_PREVIEW_MODE' | 'TOGGLE_LIVE_MODE';
   payload?: any;
 };
 
@@ -40,7 +41,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          elements: [...state.editor.elements, action.payload],
+          elements: [...state.editor.elements, action.payload as EditorElement],
         },
       };
     case 'DELETE_ELEMENT':
@@ -56,7 +57,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          selectedElement: action.payload,
+          selectedElement: action.payload as EditorElement || null,
         },
       };
     case 'CHANGE_DEVICE':
@@ -64,7 +65,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          device: action.payload,
+          device: action.payload as DeviceType,
         },
       };
     case 'TOGGLE_PREVIEW_MODE':
@@ -98,7 +99,10 @@ export const EditorProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useEditor = () => {
+export const useEditor = (): {
+  editor: EditorState['editor'];
+  dispatch: React.Dispatch<EditorAction>;
+} => {
   const context = useContext(EditorContext);
   if (!context) {
     throw new Error('useEditor must be used within an EditorProvider');

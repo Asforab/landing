@@ -1,8 +1,9 @@
 import React from 'react';
 import { useEditor } from '@/hooks/use-editor';
+import { EditorElement } from '@/types/editor';
 
 interface EditorRecursiveProps {
-  element: any;
+  element: EditorElement;
 }
 
 const EditorRecursive: React.FC<EditorRecursiveProps> = ({ element }) => {
@@ -34,7 +35,7 @@ const EditorRecursive: React.FC<EditorRecursiveProps> = ({ element }) => {
         {element.type}
       </div>
       {element.content || 'Empty Element'}
-      {element.children?.map((child: any) => (
+      {element.children?.map((child) => (
         <EditorRecursive key={child.id} element={child} />
       ))}
     </div>
