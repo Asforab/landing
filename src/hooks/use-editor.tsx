@@ -11,10 +11,21 @@ type EditorState = {
   };
 };
 
-type EditorAction = {
-  type: 'ADD_ELEMENT' | 'DELETE_ELEMENT' | 'CHANGE_CLICKED_ELEMENT' | 'CHANGE_DEVICE' | 'TOGGLE_PREVIEW_MODE' | 'TOGGLE_LIVE_MODE';
-  payload?: any;
+type EditorPayload = {
+  'ADD_ELEMENT': EditorElement;
+  'DELETE_ELEMENT': string;
+  'CHANGE_CLICKED_ELEMENT': EditorElement | null;
+  'CHANGE_DEVICE': DeviceType;
+  'TOGGLE_PREVIEW_MODE': never;
+  'TOGGLE_LIVE_MODE': never;
 };
+
+type EditorAction = {
+  [K in keyof EditorPayload]: {
+    type: K;
+    payload: EditorPayload[K];
+  }
+}[keyof EditorPayload];
 
 const initialState: EditorState = {
   editor: {
@@ -41,7 +52,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          elements: [...state.editor.elements, action.payload as EditorElement],
+          elements: [...state.editor.elements, action.payload],
         },
       };
     case 'DELETE_ELEMENT':
@@ -57,7 +68,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          selectedElement: action.payload as EditorElement || null,
+          selectedElement: action.payload,
         },
       };
     case 'CHANGE_DEVICE':
@@ -65,7 +76,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
         ...state,
         editor: {
           ...state.editor,
-          device: action.payload as DeviceType,
+          device: action.payload,
         },
       };
     case 'TOGGLE_PREVIEW_MODE':
