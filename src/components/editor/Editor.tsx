@@ -4,6 +4,7 @@ import React from 'react';
 import { EyeOff, Plus, Smartphone, Monitor, Tablet } from 'lucide-react';
 import EditorRecursive from './EditorRecursive';
 import { useEditor } from '@/hooks/use-editor';
+import { DeviceType } from '@/types/editor';
 
 const Editor = () => {
   const { editor, dispatch } = useEditor();
@@ -16,7 +17,7 @@ const Editor = () => {
   };
 
   const handlePreview = () => {
-    dispatch({ type: 'TOGGLE_PREVIEW_MODE' });
+    dispatch({ type: 'TOGGLE_PREVIEW_MODE', payload: undefined });
   };
 
   const handleAddElement = () => {
@@ -32,7 +33,7 @@ const Editor = () => {
     });
   };
 
-  const handleDeviceChange = (device: 'Desktop' | 'Tablet' | 'Mobile') => {
+  const handleDeviceChange = (device: DeviceType) => {
     dispatch({
       type: 'CHANGE_DEVICE',
       payload: device,
